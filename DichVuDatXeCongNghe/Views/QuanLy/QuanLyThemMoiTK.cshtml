@@ -1,0 +1,67 @@
+﻿@model DichVuDatXeCongNghe.Models.TaiKhoan
+@{
+    ViewBag.Title = "QuanLyThemMoiTK";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Thay đổi thông tin người dùng</title>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="~/css/change.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container">
+        <div class="book">
+            <div class="description">
+                <h1><strong>Thêm</strong> tài khoản người dùng</h1>
+                <p>
+                    Thêm tài khoản!
+                </p>
+                <div class="quote">
+                    <p>
+                        Thêm thông tin Số điện thoại, mật khẩu...
+                    </p>
+                </div>
+
+                <button class="subt" type="button"><a href="/QuanLy/QuanLy">Quay lại</a></button>
+                <center>@Html.ValidationSummary(true, "", new { @class = "text-danger" })</center>
+            </div>
+            <div class="form">
+                <form method="post" action="QuanLyThemMoiTK">
+
+                    <div class="inpbox">
+                        <li>Số Điện Thoại</li>
+                        <span class="flaticon-globe"></span>
+                        <input type="text" name="SoDienThoai">
+                        @Html.ValidationMessageFor(model => model.SoDienThoai)
+                    </div>
+                    <div class="inpbox">
+                        <li>Mật khẩu</li>
+                        <span class="flaticon-globe"></span>
+                        <input type="password" name="MatKhau">
+                        @Html.ValidationMessageFor(model => model.MatKhau)
+                    </div>
+                    <div class="inpbox">
+                        <li>Nhập lại mật khẩu</li>
+                        <span class="flaticon-globe"></span>
+                        <input type="password" name="NhapLaiMatKhau">
+                        @Html.ValidationMessageFor(model => model.NhapLaiMatKhau)
+                    </div>
+                    <div class="inpbox">
+                        <li>Vai trò</li>
+                        <span class="flaticon-globe"></span>
+                        <select name="VaiTro" class="form-select" aria-label="Default select example">
+                            <option value="admin">admin</option>
+                            <option value="user">user</option>
+                            <option value="driver">driver</option>
+                        </select>
+                    </div>                   
+                    <button class="subt" type="submit">Thêm mới</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

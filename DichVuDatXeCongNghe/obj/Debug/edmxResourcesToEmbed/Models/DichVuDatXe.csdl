@@ -1,0 +1,172 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="DichVuDatXeWebsiteModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="DanhGia">
+    <Key>
+      <PropertyRef Name="MaDanhGia" />
+    </Key>
+    <Property Name="MaDanhGia" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="MaKH" Type="Int32" />
+    <Property Name="NgayDanhGia" Type="DateTime" />
+    <Property Name="MucDo" Type="Int32" />
+    <Property Name="NoiDung" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="KhachHang" Relationship="Self.FK__DanhGia__MaKH__4316F928" FromRole="DanhGia" ToRole="KhachHang" />
+  </EntityType>
+  <EntityType Name="KhachHang">
+    <Key>
+      <PropertyRef Name="MaKH" />
+    </Key>
+    <Property Name="MaKH" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="SoDienThoai" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Ten" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="NgayThangNamSinh" Type="DateTime" Precision="0" />
+    <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="HinhAnh" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="DanhGias" Relationship="Self.FK__DanhGia__MaKH__4316F928" FromRole="KhachHang" ToRole="DanhGia" />
+    <NavigationProperty Name="TaiKhoan" Relationship="Self.FK__KhachHang__SoDie__38996AB5" FromRole="KhachHang" ToRole="TaiKhoan" />
+  </EntityType>
+  <EntityType Name="TaiKhoan">
+    <Key>
+      <PropertyRef Name="SoDienThoai" />
+    </Key>
+    <Property Name="MaTK" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="SoDienThoai" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="MatKhau" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+    <NavigationProperty Name="KhachHangs" Relationship="Self.FK__KhachHang__SoDie__38996AB5" FromRole="TaiKhoan" ToRole="KhachHang" />
+    <NavigationProperty Name="TaiXes" Relationship="Self.FK__TaiXe__SoDienTho__3B75D760" FromRole="TaiKhoan" ToRole="TaiXe" />
+    <NavigationProperty Name="ThanhToans" Relationship="Self.FK__ThanhToan__SoDie__45F365D3" FromRole="TaiKhoan" ToRole="ThanhToan" />
+    <NavigationProperty Name="ThongTinDatXes" Relationship="Self.FK__ThongTinD__SoDie__3F466844" FromRole="TaiKhoan" ToRole="ThongTinDatXe" />
+    <Property Name="VaiTro" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <EntityType Name="TaiXe">
+    <Key>
+      <PropertyRef Name="MaTX" />
+    </Key>
+    <Property Name="MaTX" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="SoDienThoai" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Ten" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="NgayThangNamSinh" Type="DateTime" Precision="0" />
+    <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="BienSo" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="CCCD" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="NgayDangKy" Type="DateTime" Precision="0" />
+    <Property Name="HinhAnh" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+    <NavigationProperty Name="TaiKhoan" Relationship="Self.FK__TaiXe__SoDienTho__3B75D760" FromRole="TaiXe" ToRole="TaiKhoan" />
+  </EntityType>
+  <EntityType Name="ThanhToan">
+    <Key>
+      <PropertyRef Name="MaThanhToan" />
+    </Key>
+    <Property Name="MaThanhToan" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="SoDienThoai" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="SoThe" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="ChuThe" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="ThoiHanThang" Type="Int32" Nullable="false" />
+    <Property Name="ThoiHanNam" Type="Int32" Nullable="false" />
+    <Property Name="CVV" Type="Int32" />
+    <NavigationProperty Name="TaiKhoan" Relationship="Self.FK__ThanhToan__SoDie__45F365D3" FromRole="ThanhToan" ToRole="TaiKhoan" />
+  </EntityType>
+  <EntityType Name="ThongTinDatXe">
+    <Key>
+      <PropertyRef Name="MaDatXe" />
+    </Key>
+    <Property Name="MaDatXe" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="SoDienThoai" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="DiemDon" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="DiemDen" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="SoKm" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="ThoiGian" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="ThanhTien" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+    <Property Name="LoaiXe" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="ThanhToan" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="NgayGioDat" Type="DateTime" />
+    <NavigationProperty Name="TaiKhoan" Relationship="Self.FK__ThongTinD__SoDie__3F466844" FromRole="ThongTinDatXe" ToRole="TaiKhoan" />
+  </EntityType>
+  <Association Name="FK__DanhGia__MaKH__4316F928">
+    <End Role="KhachHang" Type="Self.KhachHang" Multiplicity="0..1" />
+    <End Role="DanhGia" Type="Self.DanhGia" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="KhachHang">
+        <PropertyRef Name="MaKH" />
+      </Principal>
+      <Dependent Role="DanhGia">
+        <PropertyRef Name="MaKH" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__KhachHang__SoDie__38996AB5">
+    <End Role="TaiKhoan" Type="Self.TaiKhoan" Multiplicity="1" />
+    <End Role="KhachHang" Type="Self.KhachHang" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="TaiKhoan">
+        <PropertyRef Name="SoDienThoai" />
+      </Principal>
+      <Dependent Role="KhachHang">
+        <PropertyRef Name="SoDienThoai" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__TaiXe__SoDienTho__3B75D760">
+    <End Role="TaiKhoan" Type="Self.TaiKhoan" Multiplicity="1" />
+    <End Role="TaiXe" Type="Self.TaiXe" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="TaiKhoan">
+        <PropertyRef Name="SoDienThoai" />
+      </Principal>
+      <Dependent Role="TaiXe">
+        <PropertyRef Name="SoDienThoai" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__ThanhToan__SoDie__45F365D3">
+    <End Role="TaiKhoan" Type="Self.TaiKhoan" Multiplicity="1" />
+    <End Role="ThanhToan" Type="Self.ThanhToan" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="TaiKhoan">
+        <PropertyRef Name="SoDienThoai" />
+      </Principal>
+      <Dependent Role="ThanhToan">
+        <PropertyRef Name="SoDienThoai" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK__ThongTinD__SoDie__3F466844">
+    <End Role="TaiKhoan" Type="Self.TaiKhoan" Multiplicity="1" />
+    <End Role="ThongTinDatXe" Type="Self.ThongTinDatXe" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="TaiKhoan">
+        <PropertyRef Name="SoDienThoai" />
+      </Principal>
+      <Dependent Role="ThongTinDatXe">
+        <PropertyRef Name="SoDienThoai" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="DichVuDatXeWebsiteEntities1" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="DanhGias" EntityType="Self.DanhGia" />
+    <EntitySet Name="KhachHangs" EntityType="Self.KhachHang" />
+    <EntitySet Name="TaiKhoans" EntityType="Self.TaiKhoan" />
+    <EntitySet Name="TaiXes" EntityType="Self.TaiXe" />
+    <EntitySet Name="ThanhToans" EntityType="Self.ThanhToan" />
+    <EntitySet Name="ThongTinDatXes" EntityType="Self.ThongTinDatXe" />
+    <AssociationSet Name="FK__DanhGia__MaKH__4316F928" Association="Self.FK__DanhGia__MaKH__4316F928">
+      <End Role="KhachHang" EntitySet="KhachHangs" />
+      <End Role="DanhGia" EntitySet="DanhGias" />
+    </AssociationSet>
+    <AssociationSet Name="FK__KhachHang__SoDie__38996AB5" Association="Self.FK__KhachHang__SoDie__38996AB5">
+      <End Role="TaiKhoan" EntitySet="TaiKhoans" />
+      <End Role="KhachHang" EntitySet="KhachHangs" />
+    </AssociationSet>
+    <AssociationSet Name="FK__TaiXe__SoDienTho__3B75D760" Association="Self.FK__TaiXe__SoDienTho__3B75D760">
+      <End Role="TaiKhoan" EntitySet="TaiKhoans" />
+      <End Role="TaiXe" EntitySet="TaiXes" />
+    </AssociationSet>
+    <AssociationSet Name="FK__ThanhToan__SoDie__45F365D3" Association="Self.FK__ThanhToan__SoDie__45F365D3">
+      <End Role="TaiKhoan" EntitySet="TaiKhoans" />
+      <End Role="ThanhToan" EntitySet="ThanhToans" />
+    </AssociationSet>
+    <AssociationSet Name="FK__ThongTinD__SoDie__3F466844" Association="Self.FK__ThongTinD__SoDie__3F466844">
+      <End Role="TaiKhoan" EntitySet="TaiKhoans" />
+      <End Role="ThongTinDatXe" EntitySet="ThongTinDatXes" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

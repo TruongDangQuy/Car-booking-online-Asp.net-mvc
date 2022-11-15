@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="eba1bb4652d54146ac7b41b04c3874d0" Name="Diagram1">
+        <EntityTypeShape EntityType="DichVuDatXeWebsiteModel.DanhGia" Width="1.5" PointX="5.25" PointY="1.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DichVuDatXeWebsiteModel.KhachHang" Width="1.5" PointX="3" PointY="1.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="DichVuDatXeWebsiteModel.TaiKhoan" Width="1.5" PointX="0.75" PointY="7" IsExpanded="true" />
+        <EntityTypeShape EntityType="DichVuDatXeWebsiteModel.TaiXe" Width="1.5" PointX="3" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="DichVuDatXeWebsiteModel.ThanhToan" Width="1.5" PointX="3" PointY="8.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="DichVuDatXeWebsiteModel.ThongTinDatXe" Width="1.5" PointX="3" PointY="11.75" IsExpanded="true" />
+        <AssociationConnector Association="DichVuDatXeWebsiteModel.FK__DanhGia__MaKH__412EB0B6" ManuallyRouted="false" />
+        <AssociationConnector Association="DichVuDatXeWebsiteModel.FK__KhachHang__SoDie__38996AB5" ManuallyRouted="false" />
+        <AssociationConnector Association="DichVuDatXeWebsiteModel.FK__TaiXe__SoDienTho__3B75D760" ManuallyRouted="false" />
+        <AssociationConnector Association="DichVuDatXeWebsiteModel.FK__ThanhToan__SoDie__440B1D61" ManuallyRouted="false" />
+        <AssociationConnector Association="DichVuDatXeWebsiteModel.FK__ThongTinD__SoDie__3E52440B" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

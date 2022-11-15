@@ -1,0 +1,51 @@
+﻿@model DichVuDatXeCongNghe.ViewModel.TaiKhoanViewModel
+@{
+    ViewBag.Title = "DoiMatKhau";
+}
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <title>ĐĂNG KÝ</title>
+    <link href="~/css/signin.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="wrapper">
+        <div class="title">
+            Đăng ký
+        </div>
+        <center>@Html.ValidationSummary(true, "")</center>
+        <form method="post" action="DoiMatKhau">
+            <div class="field">
+                <input type="text" name="SoDienThoai">
+                <label>Số điện thoại</label>
+                @Html.ValidationMessageFor(x => x.SoDienThoai)
+            </div>
+            <div class="field">
+                <input type="password" name="MatKhau">
+                <label>Mật khẩu</label>
+                @Html.ValidationMessageFor(x => x.MatKhau)
+            </div>
+            <div class="field">
+                <input type="password" name="MatKhauMoi">
+                <label>Mật khẩu</label>
+                @Html.ValidationMessageFor(x => x.MatKhau)
+            </div>
+            <div class="field">
+                <input type="password" name="NhapLaiMatKhauMoi">
+                <label>Nhập lại mật khẩu</label>
+                @Html.ValidationMessageFor(x => x.NhapLaiMatKhau)
+            </div>
+            <div class="field">
+                <input type="submit" value="Đăng ký">
+            </div>
+            <div class="signup-link">
+                <a href="DangNhap">Đăng nhập ngay</a>
+                <br><a href="Index">Quay về trang chủ</a>
+            </div>
+
+        </form>
+    </div>
+</body>
+</html>
+

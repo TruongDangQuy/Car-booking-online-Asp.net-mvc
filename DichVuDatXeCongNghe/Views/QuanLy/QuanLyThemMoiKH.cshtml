@@ -1,0 +1,70 @@
+﻿@model DichVuDatXeCongNghe.Models.KhachHang
+@{
+    ViewBag.Title = "QuanLyThemMoiKH";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Thay đổi thông tin người dùng</title>
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="~/css/change.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container">
+        <div class="book">
+            <div class="description">
+                <h1><strong>Thêm</strong> thông tin người dùng</h1>
+                <p>
+                    Thêm đổi tại đây!
+                </p>
+                <div class="quote">
+                    <p>
+                        Thêm thông tin Tên,Email...
+                    </p>
+                </div>
+
+                <button class="subt" type="button"><a href="/QuanLy/QuanLy">Quay lại</a></button>
+            </div>
+            <div class="form">
+                <form method="post" action="QuanLyThemMoiKH" enctype="multipart/form-data">
+
+
+                    <input type="hidden" name="MaKH" readonly>
+
+                    <div class="inpbox">
+                        <li>Số Điện Thoại</li>
+                        <span class="flaticon-globe"></span>
+                        <input type="text" name="SoDienThoai" value="@Session["SoDienThoai"].ToString()" readonly>
+                    </div>
+                    <div class="inpbox">
+                        <li>Tên</li>
+                        <span class="flaticon-globe"></span>
+                        <input type="text" name="Ten">
+                    </div>
+                    <div class="inpbox">
+                        <li>Ngày Tháng Năm Sinh</li>
+                        <span class="flaticon-globe"></span>
+                        <input type="date" name="NgayThangNamSinh">
+                    </div>
+                    <div class="inpbox">
+                        <li>Email</li>
+                        <span class="flaticon-globe"></span>
+                        <input type="text" name="Email">
+                    </div>
+                    <div class="inpbox">
+                        <li>Hình Ảnh</li>
+                        <span class="flaticon-globe"></span>
+                        <input type="file" name="HinhAnhUpload" accept="image/*" required>
+                    </div>
+
+                    <button class="subt" type="submit">Thêm mới</button>
+
+
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

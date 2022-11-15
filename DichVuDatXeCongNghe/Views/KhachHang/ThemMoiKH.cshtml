@@ -1,0 +1,58 @@
+﻿@model DichVuDatXeCongNghe.Models.KhachHang
+
+@{
+    ViewBag.Title = "ThemMoiKH";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Thông Tin Cá Nhân</title>
+    <link href="~/css/signin.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="wrapper">
+        <div class="title">
+            Thông Tin Cá Nhân
+        </div>
+        <form method="post" action="ThemMoiKH" enctype="multipart/form-data">          
+            <div class="field">
+                <input type="text" name="SoDienThoai" value="@Session["SoDienThoai"].ToString()" readonly>                         
+            </div>           
+            <div class="field">
+                <input type="text" name="Ten">
+                <label>Tên</label>
+            </div>
+            <div class="field">
+                <input type="date" name="NgayThangNamSinh">
+                <label>Ngày Tháng Năm Sinh</label>
+            </div><!-- comment -->
+            <div class="field">
+                <input type="text" name="Email">
+                <label>Email</label>
+            </div>
+            <div class="field">
+                <input type="file" name="HinhAnhUpload" accept="image/*" required>
+                <label>HinhAnh</label>
+            </div>
+            <div class="field">
+                <input type="submit" value="Hoàn tất">
+            </div>
+            <div class="signup-link">
+                <a href="DangNhap">Đăng nhập ngay</a>
+                <br><a href="Index">Quay về trang chủ</a>
+            </div>
+        </form>
+    </div>
+    <center>
+        @if (ViewBag.Message != null)
+        {
+            <div class="form-group">
+                <div class="col-md-10">@ViewBag.Message</div>
+            </div>
+        }
+    </center>
+</body>
+</html>
+
+

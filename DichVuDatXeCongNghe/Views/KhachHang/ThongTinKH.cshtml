@@ -1,0 +1,284 @@
+﻿@model IEnumerable<DichVuDatXeCongNghe.Models.KhachHang>
+@{
+    ViewBag.Title = "ThongTinKH";
+}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List</title>
+    <link rel="stylesheet" href="~/css/asset/style.css">
+    <link rel="stylesheet" href="~/css/themify-icons/themify-icons.css">
+</head>
+<body>
+    <header class="header">
+
+        <div id="menu-btn" class="fas fa-bars"></div>
+
+        <a href="#" class="logo"><h3> <span>Dịch vụ</span> đặt xe công nghệ </h3> </a>
+
+
+
+
+    </header>
+
+
+
+    <div class="container">
+        <div class="list-table ">
+
+            <div class="btn-control ">
+                <button type="#" class="btn-new js-Open-add"> <i class="ti-pencil-alt2"></i> ADD New</button>
+                <div class="seach">
+                    <input type="text" class="input"><a href=""><i class="icon ti-search"></i></a>
+                </div>
+            </div>
+            <div class="content">
+                <h2>Thông tin người dùng</h2>
+                <a href=""><i class=""></i></a>
+
+            </div>
+
+            <form action="" method="post">
+                <table class="table-form">
+                    <thead class="table-header">
+                        <tr>
+                            <th>Mã Khách Hàng</th>
+                            <th>Số Điện Thoại</th>
+                            <th>Tên</th>
+                            <th>Ngày Tháng Năm Sinh</th>
+                            <th>Email</th>
+                            <th>Hình Ảnh</th>
+                            <th colspan="2"> </th>
+                        </tr>
+                    </thead>
+
+                    <tbody class="table-body ">
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td typeof="hidden">@item.MaKH</td>
+                                <td>@item.SoDienThoai</td>
+                                <td>@item.Ten</td>
+                                <td>@item.NgayThangNamSinh.ToString("yyyy-MM-dd")</td>
+                                <td>@item.Email</td>
+                                <td><img src="~/image/KhachHang/@item.HinhAnh" style="height: 150px;width: 150px"></td>
+                                <td class=" btn-edit js-edit">
+                                    <a onclick="SuaDoiKH(@item.MaKH)"><i class="ti-pencil "></i></a>
+                                </td>
+                                <td class=" btn-delete js-delete">
+                                    <a><i class="ti-trash"></i></a>
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </form>
+        </div>
+
+        <a href="/TaiKhoan/Services"><button class="favorite styled" type="button">Quay lại</button></a>
+
+    </div>
+
+    <!-- sua -->
+    <div class="form-edit container" id="SuaDoiKH">
+        <div class="add">
+            <a href=""><i class="btn-close ti-close js-close"></i></a>
+            <div class="content">
+                <h2>Sửa đổi</h2>
+            </div>
+            <div class="form-input">
+                <form method="post" action="SuaDoiKH" enctype="multipart/form-data">
+                    @foreach (var item in Model)
+                    {
+                        <div class="add-nhap "><label for="">Mã khách hàng</label><input type="text" class="input" name="MaKH" value="@item.MaKH"></div>
+                        <div class="add-nhap "><label for="">Số điện thoại</label><input type="text" class="input" name="SoDienThoai" value="@item.SoDienThoai"></div>
+                        <div class="add-nhap "><label for="">Tên</label><input type="text" class="input" name="Ten" value="@item.Ten"></div>
+                        <div class="add-nhap "><label for="">Ngày tháng năm sinh</label><input type="date" class="input" name="NgayThangNamSinh" value="@item.NgayThangNamSinh.ToString("yyyy-MM-dd")"></div>
+                        <div class="add-nhap "><label for="">Email</label><input type="text" class="input" name="Email" value="@item.Email"></div>
+                        <div class="image-input ">
+                            <label for="">Hình ảnh</label>
+                            <img src="~/image/KhachHang/@item.HinhAnh" style="width:320px;height:130px" id="image" />
+                            <img id="image-preview" alt="your image" title='' style="display: none" />
+                            <input type="file" id="file-input" name="HinhAnhUpload" onchange="change_image()">
+
+                            <script>
+                                function readURL(input) {
+                                    if (input.files && input.files[0]) {
+                                        var reader = new FileReader();
+                                        reader.onload = function (e) {
+                                            $('#image-preview').attr(
+                                                'src',
+                                                e.target.result);
+                                            $('#image-preview').hide();
+                                            $('#image-preview').fadeIn(
+                                                650);
+                                            $('#image-preview').css(
+                                                'display', 'block')
+                                            $('#image').css('display',
+                                                'none');
+                                        }
+                                        reader
+                                            .readAsDataURL(input.files[0]);
+                                    }
+                                }
+                                $("#file-input").change(function () {
+                                    readURL(this);
+                                });
+                            </script>
+                        </div>
+                        <div class="btn-add">
+                            <button class="btn submit ">Xác Nhận </button> @*<button class="btn  cancel js-close">Hủy Bỏ</button>*@
+                        </div>
+                    }
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- them  -->
+
+    <div class="form-add container">
+        <div class="add">
+            <a href=""><i class="btn-close ti-close js-close"></i></a>
+            <div class="content ">
+                <h2>Add New</h2>
+            </div>
+            <div class="form-input">
+                <form action="">
+                    <div class="add-nhap "><label for="">h :</label><input type="text" class="input"></div>
+                    <div class="add-nhap "><label for="">h :</label><input type="text" class="input"></div>
+                    <div class="add-nhap "><label for="">h :</label><input type="text" class="input"></div>
+                    <div class="add-nhap "><label for="">h :</label><input type="text" class="input"></div>
+                    <div class="add-nhap "><label for="">h :</label><input type="text" class="input"></div>
+                    <div class="add-nhap "><label for="">h :</label><input type="text" class="input"></div>
+                    <div class="add-nhap "><label for="">h :</label><input type="text" class="input"></div>
+                    <div class="add-nhap "><label for="">h :</label><input type="text" class="input"></div>
+                    <div class="add-nhap "><label for="">h :</label><input type="text" class="input"></div>
+                    <div class="add-nhap "><label for="">h :</label><input type="text" class="input"></div>
+                    <div class="add-nhap "><label for="">h :</label><input type="text" class="input"></div>
+                    <div class="add-nhap "><label for="">h :</label><input type="text" class="input"></div>
+                    <div class="add-nhap "><label for="">h :</label><input type="text" class="input"></div>
+                    <div class="add-nhap "><label for="">h :</label><input type="text" class="input"></div>
+                    <div class="add-nhap "><label for="">h :</label><input type="text" class="input"></div>
+                    <div class="btn-add">
+                        <button class="btn submit ">Xác Nhận </button> <button class="btn cancel js-close">Hủy Bỏ</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="delete container ">
+        <div class="row ">
+
+            <h1> Bạn Muốn Xóa </h1>
+            <div class="btn-accept">
+                <button class=" btn btn-yes">Yes </button>
+                <button class=" btn btn-no js-close-delete">No</button>
+            </div>
+
+        </div>
+    </div>
+    <script>
+        const edits = document.querySelectorAll('.js-edit') //chon icon /button
+        const FormEdit = document.querySelector('.form-edit') //chon form
+        const deletes = document.querySelectorAll('.js-delete') //chon icon /button
+        const dele = document.querySelector('.delete') //chon form
+        const add = document.querySelector('.js-Open-add') //chon icon /button
+        const FormAdd = document.querySelector('.form-add') //chon form
+        const closeForm = document.querySelector('.js-close') //chon icon /button
+        const closeDelete = document.querySelector('.js-close-delete') //chon icon /button
+
+
+
+
+        function showEditForm() {
+            FormEdit.classList.add('open-edit')
+        }
+
+        function hideForm() {
+            FormEdit.classList.remove('open-edit', 'open-add')
+
+        }
+
+        function showadd() {
+            FormAdd.classList.add('open-add')
+        }
+
+        function ShowDelete() {
+            dele.classList.add('form-delete')
+        }
+
+        function BtnNo() {
+            dele.classList.remove('form-delete')
+        }
+
+        for (const edit of edits) {
+            edit.addEventListener('click', showEditForm)
+
+        }
+        closeForm.addEventListener('click', hideForm)
+        add.addEventListener('click', showadd)
+        for (delet of deletes) {
+            delet.addEventListener('click', ShowDelete)
+        }
+        closeDelete.addEventListener('click', BtnNo)
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('.imageInput').on('change', function () {
+                $input = $(this);
+                if ($input.val().length > 0) {
+                    fileReader = new FileReader();
+                    fileReader.onload = function (data) {
+                        $('.image-preview').attr('src', data.target.result);
+                    }
+                    fileReader.readAsDataURL($input.prop('files')[0]);
+                    $('.image-button').css('display', 'none');
+                    $('.image-preview').css('display', 'block');
+                    $('.change-image').css('display', 'block');
+                }
+            });
+
+            $('.change-image').on('click', function () {
+                $control = $(this);
+                $('#imageInput').val('');
+                $preview = $('.image-preview');
+                $preview.attr('src', '');
+                $preview.css('display', 'none');
+                $control.css('display', 'none');
+                $('.image-button').css('display', 'block');
+            });
+
+        });
+    </script>
+    <script>
+        function SuaDoiKH(MaKH) {
+            $.ajax({
+                type: "POST",
+                url: "SuaDoiKH",
+                data: "MaKH=" + MaKH,
+                success: function (data) {
+                    $('#SuaDoiKH').replaceWith(data);
+
+                },
+                error: function (data) {
+                    alert('Lỗi!');
+                    console.log(MaKH);
+                }
+            });
+        }
+    </script>
+
+</body>
+
+</html>
+
+

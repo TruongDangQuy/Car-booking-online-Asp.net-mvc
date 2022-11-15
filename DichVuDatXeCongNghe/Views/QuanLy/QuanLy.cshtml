@@ -1,0 +1,182 @@
+﻿@model DichVuDatXeCongNghe.ViewModel.MultipleData.MultipleData
+@{
+    ViewBag.Title = "QuanLy";
+}
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+</html>
+<head>
+    <meta charset="utf-8">
+    <title>Quản lý</title>
+    <link href="~/css/QuanLy.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+</head>
+<body>
+    <div class="wrapper">
+        <button class="subt favorite styled" type="button"><a href="/TaiKhoan/Services">Quay lại</a></button>
+        <div class="title">
+            Quản lý
+        </div>
+        <div class="tabs_wrap">
+            <ul>
+                <li data-tabs="KhachHang">Khách Hàng</li>
+                <li data-tabs="ThongTinDatXe">Thông tin đặt xe</li>
+                <li data-tabs="TaiKhoan">Tài khoản</li>
+                <li data-tabs="TaiXe">Tài xế</li>
+                <li data-tabs="DanhGia">Đánh giá</li>
+                <li data-tabs="both" class="active">Tổng hợp</li>
+            </ul>
+        </div>        
+        <div class="container">
+            <ul>              
+                @foreach (var item in Model.khachHangs)
+                {
+                    <li class="item_wrap KhachHang">                      
+                        <div class="item">
+                            <div class="item_left">
+                                <div class="HinhAnh">
+                                    <img src="~/image/KhachHang/@item.HinhAnh" alt="">
+                                </div>
+                                <div class="data">
+                                    <p class="name">Mã KH: @item.MaKH</p>
+                                    <p class="name">Email: @item.Email</p>
+                                    <p class="name">Ngày tháng năm sinh: @item.NgayThangNamSinh.ToString("yyyy-MM-dd")</p>
+                                    <p class="name">Họ tên: @item.Ten</p>
+                                    <p class="name">Số điện thoại: @item.SoDienThoai</p>
+                                </div>
+                            </div>
+                            <div class="item_right">
+                                <button class="favorite styled" type="button">
+                                    @Html.ActionLink("Sửa đổi", "QuanLySuaDoiKH", new { id = @item.MaKH })                       
+                                </button>
+                                <button class="favorite styled">
+                                    <i class="fa fa-remove"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </li>
+                }
+                @foreach (var item in Model.thongTinDatXes)
+                {
+                    <li class="item_wrap ThongTinDatXe online">
+                        <div class="item">
+                            <div class="item_left">
+                                <div class="img">
+                                    <img src="https://i.imgur.com/JzUIF4o.png" alt="">
+                                </div>
+                                <div class="data">
+                                    <p class="name">@item.SoDienThoai</p>
+                                    <p class="distance">@item.DiemDon</p>
+                                    <p class="name">@item.DiemDen</p>
+                                    <p class="distance">@item.SoKm</p>
+                                    <p class="name">@item.ThoiGian</p>
+                                    <p class="distance">@item.ThanhTien</p>
+                                    <p class="name">@item.LoaiXe</p>
+                                    <p class="distance">@item.ThanhToan</p>
+                                    <p class="name">@item.NgayGioDat</p>
+                                </div>
+                            </div>
+                            <div class="item_right">
+                                <button class="favorite styled">
+                                    <i class="fa fa-remove"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </li>
+                }
+            <div class="container">
+                <div class="container">
+                    <a href="/QuanLy/QuanLyThemMoiTK"><button class="favorite styled js-hidden" type="button">Thêm mới</button></a>
+                </div>
+                <ul>
+                    @foreach (var item in Model.taiKhoans)
+                    {
+                        <li class="item_wrap TaiKhoan offline">
+
+                            <div class="item">
+                                <div class="item_left">
+                                    <div class="data">
+                                        <p class="distance">@item.MaTK</p>
+                                        <p class="name">@item.SoDienThoai</p>
+                                        <p class="distance">@item.MatKhau</p>
+                                        <p class="name">@item.VaiTro</p>
+                                    </div>
+                                </div>
+                                <div class="item_right">
+                                    <button class="favorite styled" type="button">
+                                        @Html.ActionLink("Sửa đổi", "QuanLySuaDoiTK", new { id = @item.MaTK })
+                                    </button>
+                                    <button class="favorite styled">
+                                        <i class="fa fa-remove"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </li>
+                    }
+                </ul>
+            </div>
+                @foreach (var item in Model.taiXes)
+                {
+                    <li class="item_wrap TaiXe">
+                        <div class="item">
+                            <div class="item_left">
+                                <div class="img">
+                                    <img src="~/image/TaiXe/@item.HinhAnh" alt="">
+                                </div>
+                                <div class="data">
+                                    <input type="hidden" value="@item.MaTX" />
+                                    <p class="name">Số điện thoại: @item.SoDienThoai</p>
+                                    <p class="distance">Họ tên: @item.Ten</p>
+                                    <p class="name">Ngày tháng năm sinh: @item.NgayThangNamSinh.ToString("yyyy-MM-dd")</p>
+                                    <p class="distance">Email: @item.Email</p>
+                                    <p class="name">Biển số: @item.BienSo</p>
+                                    <p class="distance">CCCD: @item.CCCD</p>
+                                    <p class="name">Ngày đăng ký: @item.NgayDangKy.ToString("yyyy-MM-dd")</p>
+                                </div>
+                            </div>
+                            <div class="item_right">
+                                <button class="favorite styled" type="button">
+                                    @Html.ActionLink("Sửa đổi", "QuanLySuaDoiTX", new { id = @item.MaTX })
+                                </button>
+                                <button class="favorite styled">
+                                    <i class="fa fa-remove"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </li>
+                }
+                @foreach (var item in Model.danhGias)
+                {
+                    <li class="item_wrap DanhGia online">
+                        <div class="item">
+                            <div class="item_left">
+                                <div class="img">
+                                    <img src="https://i.imgur.com/yUW8QfW.png" alt="">
+                                </div>
+                                <div class="data">
+                                    <p class="name">@item.MaDanhGia</p>
+                                    <p class="name">@item.MaKH</p>
+                                    <p class="name">@item.NgayDanhGia</p>
+                                    <p class="name">@item.MucDo</p>
+                                    <p class="distance">@item.NoiDung</p>
+                                </div>
+                            </div>
+                            <div class="item_right">
+                                <button class="favorite styled" type="button">
+                                    @Html.ActionLink("Sửa đổi", "QuanLySuaDoiDanhGia", new { id = @item.MaDanhGia })
+                                </button>
+                                <button>
+                                    <i class="fa fa-remove"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+    <script src="~/js/QuanLy.js"></script>
+</body>
+</html>
+
