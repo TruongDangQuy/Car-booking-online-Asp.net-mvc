@@ -1,0 +1,360 @@
+﻿@model  IEnumerable<WebsiteDatXeCongNghe.Models.TaiXe>
+@{
+    ViewBag.Title = "ThongTinTaiXe";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Tài xế nhận chuyến xe</title>
+    <link href="~/css/TaiXe.css" rel="stylesheet" />
+    <link href="~/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="~/Scripts/jquery.signalR-2.4.3.min.js"></script>
+    <script src="~/signalr/hubs"></script>
+
+    <link href="~/css/TaiXe.min.css" rel="stylesheet" />
+
+
+
+    <script src="~/js/bootstrap.min.js"></script>
+
+    <script src="~/js/ie10-viewport-bug-workaround.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Poppins:500&display=swap" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDM4R4ZQGmaCj3wA4R3ykoEr4EeQPHSvRc&libraries=places"></script>
+
+
+
+
+    <script src="~/js/TaiXeGoogleMap.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Tài xế nhận chuyến xe</h1>
+        <nav>
+            <ul>
+                <li><a href="/ThongKe/ThongKeDoanhThu">Thống kê doanh thu</a></li>
+                <li><a href="/TaiXe/ThongTinNhanChuyen?@Session["SoDienThoai"].ToString()">Lịch sử nhận chuyến</a></li>
+                <li><a href="/TaiXe/ThongTinCaNhanTaiXe?@Session["SoDienThoai"].ToString()">Thông tin cá nhân</a></li>
+                <li><a href="/DanhGiaUngDung/DanhGiaUngDung">Đánh giá</a></li>
+                <li><a href="/TaiKhoan/DangXuat">Đăng xuất</a></li>
+            </ul>
+        </nav>
+
+        @*<input type="hidden" id="phoneNumber" value="@Session["SoDienThoai"].ToString()" />*@
+        <span id="phoneNumber">@Session["SoDienThoai"].ToString()</span>
+        @foreach (var tx in Model)
+        {
+            <button id="btnGetCurrentLocation" type="button" class="col-xs-5 btn btn-success">
+                <span class="glyphicon glyphicon-plus-sign"></span> Lấy vị trí hiện tại
+            </button>
+            <span id="DriverLocation">@tx.ViTri</span>
+            <span id="DriverName">@tx.Ten</span>
+            <img src="~/image/TaiXe/@tx.HinhAnh" alt="" width="50" height="50" id="DriverImage">
+
+
+            <table>
+                <tr>
+                    <td>Mức độ đánh giá:</td>
+                    <td>
+                        <div class="star-ratings" id="DriverRates">
+                            @for (int i = 0; i < @tx.MucDoDanhGiaTB; i++)
+                            {
+                                <i class="fas fa-star"></i>
+                            }
+                        </div>
+                        <span id="DriverRate" style="display:none;">@tx.MucDoDanhGiaTB</span>
+                        <span id="HighestDisplayedRating" style="display: none;">4</span>
+                    </td>
+                </tr>
+            </table>
+            <span id="DriverLicense">@tx.BienSo</span>
+            <div id="locations"></div>
+            <button id="btnUpdateLocation" type="button" class="col-xs-5 btn btn-success">
+                <span class="glyphicon glyphicon-plus-sign"></span> Cập nhật trí hiện tại
+            </button>
+        }
+    </header>
+
+    <main>
+        <section id="map">
+            <!-- Map will be displayed here -->
+            <div class="col-md-8 google-map-wrap">
+                <div id="googleMap" class="map"></div>
+            </div>
+
+        </section>
+
+        <section id="ride-details">
+            <h2>Chi tiết chuyến xe</h2>
+            <p>Khoảng cách: <span id="distance"></span></p>
+            <p>Thời gian: <span id="duration"></span></p>
+            <p>Tổng tiền: <span id="totalFare"></span></p>
+            <p>Điểm đón: <span id="txtLocationPickup"></span></p>
+            <p>Điểm đến: <span id="txtLocationDrop"></span></p>
+            <p>Loại xe: <span id="type"></span></p>
+            <p>Số điện thoại: <span id="phone-number"></span></p>
+            <p>Họ tên: <span id="PassengerName"></span></p>
+            <div class="driver-image" id="PassengerImage">
+                <img src="" alt="Hình ảnh" width="50" height="50" id="PassengerImages">
+            </div>
+            <p>Hình thức thanh toán: <span id="result"></span></p>
+            <p>Ngày đặt: <span id="dated"></span></p>
+            <button id="accept-ride" style="display:none;">Chấp nhận chuyến</button>
+            <button id="cancel-ride" style="display:none;">Hủy chuyến</button>
+        </section>
+
+        <!--<section id="ride-history">
+            <h2>Ride History</h2>-->
+        <!-- List of previous rides will be displayed here -->
+        <!--</section>-->
+    </main>
+
+    @*<footer>
+            <p>&copy; 2023 Grab Driver App</p>
+        </footer>*@
+
+
+    <script src="~/js/TaiXe.js"></script>
+    <script>
+        $(function () {
+            // Event listener for btnUpdateLocation
+            $('#btnUpdateLocation').click(function () {
+                // Get the new location data from the locations element
+                var newLocation = $('#txtLocation1').val();
+                // Get the phone number associated with the current TaiXe object
+                var phoneNumber = $('#phoneNumber').val();
+
+                // Send an AJAX request to the server to update the location
+                $.ajax({
+                    url: 'SuaDoiViTri',
+                    type: 'POST',
+                    data: { location: newLocation, phoneNumber: phoneNumber },
+                    success: function (data) {
+                        // If the update was successful, update the locations element with the new data
+                        $('#txtLocation1').val(newLocation);
+                        $('#DriverLocation').text(newLocation);
+                    },
+                    error: function () {
+                        // If the update failed, show an error message
+                        alert('Failed to update location');
+                    }
+                });
+            });
+        });
+    </script>
+
+
+    <script>
+        $(function () {
+            // Initialize the connection to the SignalR hub
+            var bookingHub = $.connection.bookingHub;
+
+            // Define a client-side method to receive the booking data from the server
+            bookingHub.client.displayBookingData = function (distance, duration, totalFare, location1, location2, type, phone, payment, DateTime, PassengerImage, PassengerName) {
+                // Retrieve the driver's rating from the hidden span
+                var driverRating = parseFloat($("#DriverRate").text());
+
+                // Retrieve the highest displayed driver rating
+                var highestDisplayedRating = parseFloat($("#HighestDisplayedRating").text());
+
+                // Perform the priority check based on the driver's rating
+                if (driverRating > highestDisplayedRating) {
+                    // Update the highest displayed rating
+                    $("#HighestDisplayedRating").text(driverRating);
+
+                    // Clear the booking data and hide elements
+                    $("#distance").text("");
+                    $("#duration").text("");
+                    $("#totalFare").text("");
+                    $("#txtLocationPickup").text("");
+                    $("#txtLocationDrop").text("");
+                    $("#type").text("");
+                    $("#phone-number").text("");
+                    $("#result").text("");
+                    $("#dated").text("");
+                    $('#PassengerImage').hide();
+                    $('#PassengerName').hide();
+                    $("#accept-ride").hide();
+                    $("#cancel-ride").hide();
+
+                    // Display the booking data for drivers with higher ratings
+                    $("#distance").text(distance);
+                    $("#duration").text(duration);
+                    $("#totalFare").text(totalFare);
+                    $("#txtLocationPickup").text(location1);
+                    $("#txtLocationDrop").text(location2);
+                    $("#type").text(type);
+                    $("#phone-number").text(phone);
+                    $("#result").text(payment);
+                    $("#dated").text(DateTime);
+                    $('#PassengerImage img').attr('src', '' + PassengerImage);
+                    $("#PassengerName").text(PassengerName);
+
+                    // Show the accept and cancel ride buttons
+                    $("#accept-ride").show();
+                    $("#cancel-ride").show();
+                }
+            };
+
+            // Accept ride button click event
+            $("#accept-ride").click(function (e) {
+                var driverLocation = $("#DriverLocation").text();
+                bookingHub.server.driverAcceptsRide(driverLocation);
+
+                // Show a SweetAlert success message
+                swal({
+                    title: "Ride accepted!",
+                    text: "Driver location: " + driverLocation,
+                    type: "success",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            });
+
+            // Cancel ride button click event
+            $("#cancel-ride").click(function (e) {
+                bookingHub.server.driverCancelsRide();
+
+                // Show a SweetAlert success message
+                swal({
+                    title: "Ride cancelled!",
+                    type: "success",
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+
+                // Clear the booking data and hide elements
+                $("#distance").text("");
+                $("#duration").text("");
+                $("#totalFare").text("");
+                $("#txtLocationPickup").text("");
+                $("#txtLocationDrop").text("");
+                $("#type").text("");
+                $("#phone-number").text("");
+                $("#result").text("");
+                $("#dated").text("");
+                $('#PassengerImage').hide();
+                $('#PassengerName').hide();
+                $("#accept-ride").hide();
+                $("#cancel-ride").hide();
+            });
+
+            // Start the SignalR connection
+            $.connection.hub.start();
+        });
+    </script>
+    <script>
+        $(function () {
+            $("#accept-ride").click(function (e) {
+    e.preventDefault(); // Prevent the default form submission behavior
+
+    // Get the data to be sent
+    var PhoneNumber = $("#phoneNumber").text();
+    var DriverLocations = $("#DriverLocation").text();
+    var DriverName = $("#DriverName").text();
+    var DriverLicense = $("#DriverLicense").text();
+    var txtLocationPickup = $("#txtLocationPickup").text();
+    var txtLocationDrop = $("#txtLocationDrop").text();
+    var result = $("#result").text();
+    var totalFare = $("#totalFare").text();
+    var PassengerPhone = $("#phone-number").text();
+    var distance = $("#distance").text();
+    var duration = $("#duration").text();
+    var type = $("#type").text();
+    var dated = $("#dated").text();
+    var DriverRate = $("#DriverRate").text();
+    var DriverImage = $("#DriverImage").attr("src");
+    var PassengerImages = $("#PassengerImages").attr("src");
+    var PassengerName = $("#PassengerName").text();
+
+    // Send the data to the server
+    $.ajax({
+        url: '@Url.Action("SendDriverData", "TaiXe")', // The server URL to send the data
+        type: 'POST', // The HTTP method to use
+        data: { // The data to send to the server
+            PhoneNumber: PhoneNumber,
+            DriverLocations: DriverLocations,
+            DriverName: DriverName,
+            DriverLicense: DriverLicense,
+            txtLocationPickup: txtLocationPickup,
+            txtLocationDrop: txtLocationDrop,
+            result: result,
+            totalFare: totalFare,
+            PassengerPhone: PassengerPhone,
+            distance: distance,
+            duration: duration,
+            type: type,
+            dated: dated,
+            DriverRate: DriverRate,
+            DriverImage: DriverImage,
+            PassengerImages: PassengerImages,
+            PassengerName: PassengerName
+
+        },
+        success: function (data) {
+            // Redirect to the new page
+            window.location.href = "@Url.Action("TaiXeDonKhach", "TaiXe")";
+        },
+
+        error: function (xhr, status, error) { // If an error occurred
+            console.log(error); // Log the error to the console
+        }
+            });
+            });
+
+});
+    </script>
+    <script>
+        $(function () {
+            var bookingHub = $.connection.bookingHub;
+
+            // Start the connection.
+            $.connection.hub.start().done(function () {
+                console.log('SignalR connection started for accepted!!!.');
+                // Execute the script when the DOM is ready.
+                $(document).ready(function () {
+                    // Get the driver data.
+                    var PhoneNumber = $("#phoneNumber").text();
+                    var PhoneNumbers = $("#phone-number").text();
+                    var DriverLocation = $("#DriverLocation").text();
+                    var DriverName = $("#DriverName").text();
+
+                    var DriverLicense = $("#DriverLicense").text();
+                    var txtLocationPickup = $("#txtLocationPickup").text();
+                    var txtLocationDrop = $("#txtLocationDrop").text();
+                    var distance = $("#distance").text();
+                    var duration = $("#duration").text();
+                    var type = $("#type").text();
+                    var dated = $("#dated").text();
+
+                    var result = $("#result").text();
+                    var totalFare = $("#totalFare").text();
+                    var DriverRated = $("#DriverRate").text();
+                    var DriverImages = $("#DriverImage").attr("src");
+
+                    // Send the driver data to the server.
+                    bookingHub.server.sendDriverData2(PhoneNumber, PhoneNumbers, DriverLocation, DriverName, DriverLicense, txtLocationPickup, txtLocationDrop, distance, duration, type, dated, result, totalFare, DriverRated, DriverImages);
+                });
+            });
+        });
+
+    </script>
+</body>
+</html>
+

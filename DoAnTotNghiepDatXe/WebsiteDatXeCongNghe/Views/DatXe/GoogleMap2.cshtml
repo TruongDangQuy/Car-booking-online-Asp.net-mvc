@@ -1,0 +1,318 @@
+﻿
+
+@{
+    ViewBag.Title = "GoogleMap2";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Đặt xe hơi</title>
+
+    <link href="~/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+
+    <link href="~/css/ie10-viewport-bug-workaround.css" rel="stylesheet" />
+
+
+    <link href="~/css/style.min.css" rel="stylesheet" />
+
+
+    <script src="~/js/jquery-1.11.2.min.js"></script>
+
+    <script src="~/js/bootstrap.min.js"></script>
+
+    <script src="~/js/ie10-viewport-bug-workaround.js"></script>
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDM4R4ZQGmaCj3wA4R3ykoEr4EeQPHSvRc&libraries=places"></script>
+
+    <script src="~/js/googleMap.min 2.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Poppins:500&display=swap" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="./index.html">Đặt xe hơi</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <!--
+                    <li><a href="./settings.html">Settigns</a></li>
+                    <li><a href="./logout.html">Logout</a></li>
+                    -->
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-4 location-form">
+                <form id="frmLocation" action="" role="form">
+                    <div class="panel-group" id="locationDetails" role="tablist" aria-multiselectable="true">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="locationDetailsHeading">
+                                <h4 class="panel-title">
+                                    <span class="glyphicon glyphicon-edit"></span>
+                                    <a role="button" data-toggle="collapse" data-parent="#locationDetails" href="#locationSection" aria-expanded="true" aria-controls="locationSection">
+                                        Thông tin vị trí
+                                    </a>
+                                    <div class="checkbox pull-right">
+                                        <label>
+                                            <input id="chkOptimizePath" type="checkbox" />
+                                            Tối ưu hóa chỉ dẫn
+                                        </label>
+                                    </div>
+                                </h4>
+                            </div>
+                            <div id="locationSection" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="locationDetailsHeading">
+                                <div class="panel-body">
+                                    <div id="locations"></div>
+
+                                    <div class="form-group">
+                                        <button id="btnAddLocation" type="button" class="col-xs-6 btn btn-success">
+                                            <span class="glyphicon glyphicon-plus-sign"></span> Thêm vị trí
+                                        </button>
+                                        <button id="btnClearDirections" type="button" class="col-xs-5 btn btn-danger">
+                                            <span class="glyphicon glyphicon-remove-sign"></span> Đặt lại
+                                        </button>
+                                        <button id="btnCalculateFare" type="button" class="col-xs-6 btn btn-primary">
+                                            <span class="glyphicon glyphicon-ok-sign"></span> Giá tiền
+                                        </button>
+                                        <button id="btnGetJson" type="button" class="col-xs-5 btn btn-primary">
+                                            <span class="glyphicon glyphicon-ok-sign"></span> Xem thông tin
+                                        </button>
+                                        <button id="btnBooking" type="button" class="col-xs-6 btn btn-success">
+                                            <span class="glyphicon glyphicon-plus-sign"></span> Đặt ngay
+                                        </button>
+                                        <button id="btnGetCurrentLocation" type="button" class="col-xs-5 btn btn-success">
+                                            <span class="glyphicon glyphicon-plus-sign"></span> Lấy vị trí hiện tại
+                                        </button>
+                                        <label for="cash">
+
+                                            <span>Lựa chọn phương thức thanh toán</span>
+                                        </label>
+                                        <script>
+                                            $(document).ready(function () {
+                                                $("#btnBooking").click(function () {
+                                                    swal({
+                                                        title: "Đã tìm thấy tài xế",
+                                                        text: "Họ tên: Nguyễn Văn A\n\Số điện thoại: 0997265111\n\Ngày tháng năm sinh: 1997-01-14\n\NguyenVanA@gmail.com\n\Biển số: 59C2-257.88\n\Căn cước công dân:99999999",
+                                                        icon: "success",
+                                                        buttons: true,
+                                                        dangerMode: true,
+                                                    })
+                                                        .then((willDelete) => {
+                                                            if (willDelete) {
+                                                                swal("Đặt xe thành công!", {
+                                                                    icon: "success",
+                                                                });
+                                                            } else {
+                                                                swal("Bạn đã huỷ chuyến xe!");
+                                                            }
+                                                        });
+
+                                                });
+                                            });
+                                            //function sweetalert() {
+                                            //    swal({
+                                            //        title: "Đã tìm thấy tài xế",
+                                            //        text: "Họ tên: Nguyễn Văn A\n\Số điện thoại: 0997265111\n\Ngày tháng năm sinh: 1997-01-14\n\NguyenVanA@gmail.com\n\Biển số: 59C2-257.88\n\Căn cước công dân:99999999",
+                                            //        icon: "success",
+                                            //        buttons: true,
+                                            //        dangerMode: true,
+                                            //    });
+                                            //        .then((willDelete) => {
+                                            //            if (willDelete) {
+                                            //                swal("Đặt xe thành công!", {
+                                            //                    icon: "success",
+                                            //                });
+                                            //            } else {
+                                            //                swal("Bạn đã huỷ chuyến xe!");
+                                            //            }
+                                            //        });
+                                            //}
+                                        </script>
+                                        <form></form>
+                                        <form>
+                                            <fieldset>
+                                                <label for="cash">
+                                                    <input type="radio" name="ThanhToan" value="Tiền mặt" />
+                                                    <i class="fa fa-money" aria-hidden="true"></i>
+                                                    <span>Tiền mặt</span>
+                                                </label> <br />
+                                                <label for="card">
+                                                    <input type="radio" name="ThanhToan" value="Qua thẻ" />
+                                                    <i class="fa fa-credit-card" aria-hidden="true"></i>
+                                                    <a href="/ThanhToan/ThanhToan"><button class="favorite styled" type="button">Qua thẻ</button></a>
+                                                </label> <br />
+                                            </fieldset>
+                                            <button type="button" onclick="displayRadioValue()">
+                                                Chọn
+                                            </button>
+
+                                            <script>
+                                                function displayRadioValue() {
+                                                    var ele = document.getElementsByName('ThanhToan');
+
+                                                    for (i = 0; i < ele.length; i++) {
+                                                        if (ele[i].checked)
+                                                            document.getElementById("result").innerHTML
+                                                                = "" + ele[i].value;
+                                                    }
+                                                }
+                                            </script>
+                                        </form>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel-group fare-details-group" id="fareDetails" role="tablist" aria-multiselectable="true">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="fareDetailsHeading">
+                                <h4 class="panel-title">
+                                    <span class="glyphicon glyphicon-th-list"></span>
+                                    <a role="button" data-toggle="collapse" data-parent="#fareDetails" href="#fareBreakDown" aria-expanded="true" aria-controls="fareBreakDown">
+                                        Giá: <strong><span id="fare"></span></strong>
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="fareBreakDown" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="fareDetailsHeading">
+                                <div class="panel-body">
+                                    <table class="table">
+                                        <tr>
+                                            <td>
+                                                <span class="glyphicon glyphicon-ok"></span>
+                                                <label>Số điện thoại:</label>
+                                            </td>
+                                            <td>
+                                                <span id="phone-number">@Session["SoDienThoai"].ToString()</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <span class="glyphicon glyphicon-ok"></span>
+                                                <label>Khoảng cách:</label>
+                                            </td>
+                                            <td>
+                                                <span id="distance"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <span class="glyphicon glyphicon-ok"></span>
+                                                <label>Thời gian:</label>
+                                            </td>
+                                            <td>
+                                                <span id="duration"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <span class="glyphicon glyphicon-ok"></span>
+                                                <label>Giá khởi đầu:</label>
+                                            </td>
+                                            <td>
+                                                <span id="startingPrice"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <span class="glyphicon glyphicon-ok"></span>
+                                                <label>Giá chuyến đi:</label>
+                                            </td>
+                                            <td>
+                                                <span id="travelPrice"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <span class="glyphicon glyphicon-ok"></span>
+                                                <label>Tổng cộng:</label>
+                                            </td>
+                                            <td>
+                                                <strong><span id="totalFare"></span></strong>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <span class="glyphicon glyphicon-ok"></span>
+                                                <label>Loại xe:</label>
+                                            </td>
+                                            <td>
+                                                <strong><span id="type"></span></strong>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <span class="glyphicon glyphicon-ok"></span>
+                                                <label>Hình thức thanh toán:</label>
+                                            </td>
+                                            <td>
+                                                <strong><span id="result"></span></strong>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <span class="glyphicon glyphicon-ok"></span>
+                                                <label>Ngày giờ đặt</label>
+                                            </td>
+                                            <td>
+                                                <strong><span id="dated"></span></strong>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <script>
+                    $(document).ready(function () {
+                        var today = new Date();
+                        var dateTime = today.toISOString().slice(0, 16);
+                        $('#dated').text(dateTime);
+
+                    });
+                </script>
+            </div>
+            <div class="col-md-8 google-map-wrap">
+                <div id="googleMap" class="map"></div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
+
+
+
+

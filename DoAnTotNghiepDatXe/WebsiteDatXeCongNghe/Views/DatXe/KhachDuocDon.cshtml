@@ -1,0 +1,344 @@
+﻿@model IEnumerable<WebsiteDatXeCongNghe.Models.KhachHang>
+@{
+    ViewBag.Title = "KhachDuocDon";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Tài xế đón khách</title>
+    <link href="~/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <link href="~/css/ie10-viewport-bug-workaround.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="~/css/style.min.css" rel="stylesheet" />
+    <script src="~/Scripts/jquery.signalR-2.4.3.min.js"></script>
+    <script src="~/signalr/hubs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <link href="~/css/NhanTin.css" rel="stylesheet" />
+    <script src="~/js/bootstrap.min.js"></script>
+
+    <script src="~/js/ie10-viewport-bug-workaround.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Poppins:500&display=swap" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDM4R4ZQGmaCj3wA4R3ykoEr4EeQPHSvRc&libraries=places"></script>
+
+
+    <script src="~/js/googleMap.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <link href="~/css/NhanChuyenXe.css" rel="stylesheet" />
+    <script src="~/js/NhanChuyenXe.js"></script>
+</head>
+<body>
+    <div class="col-md-8 google-map-wrap">
+        <div id="googleMap" class="map"></div>
+    </div>
+    <div class="header">
+        <h1>Tài xế đón khách</h1>
+    </div>
+    <div id="driver-info">
+        <div class="driver-image" id="DriverImage">
+            <img src="" alt="Driver Image">
+        </div>
+        <table>
+            <tr>
+                <td>Tên tài xế:</td>
+                <td><span class="driver-name" id="DriverName"></span></td>
+            </tr>
+            <tr>
+                <td>Số điện thoại tài xế:</td>
+                <td><span class="driver-name" id="phoneNumber"></span></td>
+            </tr>
+            <tr>
+                <td>Số điện thoại khách hàng:</td>
+                <td><span class="driver-name" id="phone-number"></span></td>
+            </tr>
+            <tr>
+                <td>Giấy phép lái xe:</td>
+                <td><span class="driver-license" id="DriverLicense"></span></td>
+            </tr>
+            <tr>
+                <td>Đánh giá:</td>
+                <td>
+                    <div class="star-ratings" id="DriverRate">
+                        <span class="fa fa-star"></span>
+                        <span class="fa fa-star"></span>
+                        <span class="fa fa-star"></span>
+                        <span class="fa fa-star"></span>
+                        <span class="fa fa-star-o"></span>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>Vị trí tài xế:</td>
+                <td><span class="pickup-point" id="DriverLocation"></span></td>
+            </tr>
+            <tr>
+                <td>Điểm đón:</td>
+                <td><span class="pickup-point" id="txtLocationPickup"></span></td>
+            </tr>
+            <tr>
+                <td>Điểm đến:</td>
+                <td><span class="destination" id="txtLocationDrop"></span></td>
+            </tr>
+            <tr>
+                <td>Thời gian chuyến xe:</td>
+                <td><span class="destination" id="duration"></span></td>
+            </tr>
+            <tr>
+                <td>Khoảng cách:</td>
+                <td><span class="destination" id="distance"></span></td>
+            </tr>
+            <tr>
+                <td>Loại xe:</td>
+                <td><span class="destination" id="type"></span></td>
+            </tr>
+            <tr>
+                <td>Ngày đặt:</td>
+                <td><span class="destination" id="dated"></span></td>
+            </tr>
+            <tr>
+                <td>Hình thức thanh toán:</td>
+                <td><span class="payment-form" id="result"></span></td>
+            </tr>
+            <tr>
+                <td>Tổng tiền:</td>
+                <td><span class="total-amount" id="totalFare"></span></td>
+            </tr>
+        </table>
+        <div class="button-container">
+            <div class="message-container">
+                <div class="icon-container">
+                    <i class="fa fa-comment"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-popup" id="myForm">
+            <div class="chat-header">
+                <div class="chat-receiver">
+                    <span id="DriverImages">
+                        <img src="" alt="Receiver Image">
+                    </span>
+                    <span id="DriverNames"></span>
+                </div>
+                <span class="close">&times;</span>
+            </div>
+
+            <div class="chat-content">
+                <div class="chat-messages" id="chat-messages">
+                    <div id="sender-chat-message"></div>
+                    <div id="receiver-chat-message"></div>
+
+                </div>
+                <div class="chat-input-container">
+                    <div class="chat-input">
+                        <textarea id="chat-textarea" placeholder="Nhập tin nhắn..."></textarea>
+                        <div class="send-btn-container">
+                            <button id="send-message-btn"><i class="fa fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Place where the sweet alert will be displayed -->
+        <div id="sweetAlertContainer"></div>
+
+    </div>
+
+    
+    <script>
+        $(function () {
+            // Initialize the connection to the SignalR hub
+            var bookingHub = $.connection.bookingHub;
+
+            // Define a client-side method to receive the booking data from the server
+            bookingHub.client.displaySendDriverData2 = function (PhoneNumber, PhoneNumbers, DriverLocation, DriverName, DriverLicense, txtLocationPickup, txtLocationDrop, distance, duration, type, dated, result, totalFare, DriverRated, DriverImages) {
+                $("#phoneNumber").text(PhoneNumber);
+                $("#phone-number").text(PhoneNumbers);
+                $("#DriverLocation").text(DriverLocation);
+                $("#DriverName").text(DriverName);
+                $("#DriverNames").text(DriverName);
+                $("#DriverLicense").text(DriverLicense);
+                $("#txtLocationPickup").text(txtLocationPickup);
+                $("#txtLocationDrop").text(txtLocationDrop);
+                $("#distance").text(distance);
+                $("#duration").text(duration);
+                $("#type").text(type);
+                $("#dated").text(dated);
+                $("#result").text(result);
+                $("#totalFare").text(totalFare);
+
+                var starHtml = "";
+                for (var i = 0; i < DriverRated; i++) {
+                    starHtml += '<span class="fa fa-star"></span>';
+                }
+                for (var i = DriverRated; i < 5; i++) {
+                    starHtml += '<span class="fa fa-star-o"></span>';
+                }
+                $("#DriverRate").html(starHtml);
+                $('#DriverImage img').attr('src', '' + DriverImages);
+                $('#DriverImages img').attr('src', '' + DriverImages);
+            };
+            // Start the SignalR connection
+            $.connection.hub.start();
+        });
+    </script>
+    <script>
+        $(document).on("click", ".fa-comment", function () {
+            var phoneOfSender = $("#phone-number").text();
+            var phoneOfReceiver = $("#phoneNumber").text();
+
+            $.ajax({
+                type: "POST",
+                url: "/NhanTin/NoiDungNhanTin",
+                data: { phoneOfSender: phoneOfSender, phoneOfReceiver: phoneOfReceiver },
+                dataType: "json",
+                success: function (data) {
+                    $("#sender-chat-message").empty();
+                    $("#receiver-chat-message").empty();
+
+                    data.SenderChatMessages.forEach(function (message) {
+                        $("#sender-chat-message").append("<div class='chat-message right'><div class='chat-message-text'>" + message + "</div></div>");
+                    });
+
+                    data.ReceiverChatMessages.forEach(function (message) {
+                        $("#receiver-chat-message").append("<div class='chat-message left'><div class='chat-message-text'>" + message + "</div></div>");
+                    });
+
+                    // Open the chat popup
+                    $("#myForm").show();
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    console.log(thrownError);
+                }
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            // Initialize the SignalR connection
+            var chatHub = $.connection.chatHub;
+
+            // Start the SignalR connection
+            $.connection.hub.start().done(function () {
+                console.log('SignalR connection established.');
+
+                // Handle send button click event
+                $("#send-message-btn").click(function () {
+                    sendMessage();
+                });
+
+                // Handle enter key press event
+                $("#chat-textarea").keypress(function (event) {
+                    if (event.which === 13 && !event.shiftKey) {
+                        event.preventDefault();
+                        sendMessage();
+                    }
+                });
+            });
+
+            // Function to send the message
+            function sendMessage() {
+                var message = $("#chat-textarea").val();
+                if (message.trim() !== "") {
+                    // Append the message to the sender's chat messages
+                    var senderChatMessage = $("<div class='chat-message right'><div class='chat-message-text'>" + message + "</div></div>");
+                    $("#sender-chat-message").append(senderChatMessage);
+
+                    // Clear the input textarea
+                    $("#chat-textarea").val("");
+
+                    // Send the message via AJAX
+                    $.ajax({
+                        url: "/NhanTin/ThemNhanTin",
+                        type: "POST",
+                        dataType: "json",
+                        data: {
+                            message: message,
+                            phoneOfSender: $("#phone-number").text(),
+                            phoneOfReceiver: $("#phoneNumber").text()
+                        },
+                        success: function (response) {
+                            // Handle success response if needed
+                        },
+                        error: function (error) {
+                            console.log(error);
+                        }
+                    });
+
+                    // Send the message via SignalR
+                    var phoneOfSender = $("#phone-number").text();
+                    var phoneOfReceiver = $("#phoneNumber").text();
+                    chatHub.server.customerSend(message, phoneOfSender, phoneOfReceiver);
+                }
+            }
+        });
+
+    </script>
+
+    <script>
+        $(function () {
+            // Initialize the connection to the SignalR hub
+            var chatHub = $.connection.chatHub;
+
+            // Define a client-side method to receive the message from the server
+            chatHub.client.displayDriver = function (message, phoneOfSender, phoneOfReceiver) {
+                console.log(message); // Log the message to the console
+                var chatMessage = $('<div class="chat-message left"><div class="chat-message-text">' + message + '</div></div>');
+                $('#receiver-chat-message').append(chatMessage);
+            };
+
+
+            // Start the SignalR connection
+            $.connection.hub.start();
+        });
+
+    </script>
+    <script>
+        $(document).ready(function () {
+            // Listen for the showSweetAlert event from SignalR
+            $.connection.bookingHub.client.showSweetAlert = function () {
+                // Display the sweet alert using a library of your choice (e.g., SweetAlert2)
+                Swal.fire({
+                    title: 'Thông báo!',
+                    text: 'Xác nhận trả khách?',
+                    showCancelButton: true,
+                    confirmButtonText: 'Đồng ý',
+                    cancelButtonText: 'Hủy bỏ',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.connection.bookingHub.server.acceptPickupRequest();
+                        // User clicked Accept
+                        // Perform the necessary actions or redirect to a new page
+                        // Example: window.location.href = 'NewPage.cshtml';
+                        window.location.href = "@Url.Action("KhachDuocTra", "DatXe")";
+                    } else {
+                        // User clicked Cancel
+                        // Send cancellation notification to TaiXeDonKhach.cshtml via SignalR
+                        $.connection.bookingHub.server.cancelPickupRequest();
+                    }
+                });
+            };
+
+            // Start the SignalR connection
+            $.connection.hub.start();
+        });
+    </script>
+</body>
+</html>
+

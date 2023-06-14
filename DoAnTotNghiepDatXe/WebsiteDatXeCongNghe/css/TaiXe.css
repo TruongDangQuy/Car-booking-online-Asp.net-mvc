@@ -1,0 +1,107 @@
+﻿* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: #f5d76e;
+    color: #fff;
+}
+
+nav ul {
+    display: flex;
+    list-style: none;
+}
+
+nav li {
+    margin-right: 1rem;
+}
+
+nav a {
+    color: #fff;
+    text-decoration: none;
+}
+
+main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 2rem;
+    padding: 2rem;
+}
+
+#map {
+    height: 0px;
+    border: 1px solid #f5d76e;
+}
+
+#ride-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: #f7f7f7;
+    padding: 1rem;
+}
+
+    #ride-details h2 {
+        margin-bottom: 1rem;
+    }
+
+    #ride-details p {
+        margin-bottom: 0.5rem;
+    }
+
+        #ride-details p span {
+            font-weight: bold;
+        }
+
+    #ride-details button {
+        background-color: #f5d76e;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        margin-top: 1rem;
+    }
+
+        #ride-details button:hover {
+            background-color: #fff;
+            color: #f5d76e;
+        }
+
+#ride-history {
+    background-color: #f7f7f7;
+    padding: 1rem;
+}
+table {
+    flex-basis: calc(100% - 170px);
+}
+
+    table td {
+        padding: 10px;
+        font-weight: bold;
+    }
+
+        table td:first-child {
+            width: 150px;
+        }
+
+.star-ratings {
+    color: #ffc107;
+}
+
+    .star-ratings .fa-star-o {
+        color: #bbb;
+    }

@@ -1,0 +1,616 @@
+﻿@model IEnumerable<WebsiteDatXeCongNghe.Models.KhachHang>
+@{
+    ViewBag.Title = "GoogleMap";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Đặt xe máy</title>
+
+    <link href="~/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <link href="~/css/ie10-viewport-bug-workaround.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="~/Scripts/jquery.signalR-2.4.3.min.js"></script>
+    <script src="~/signalr/hubs"></script>
+
+    <link href="~/css/style.min.css" rel="stylesheet" />
+
+
+
+
+    <script src="~/js/bootstrap.min.js"></script>
+
+    <script src="~/js/ie10-viewport-bug-workaround.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Poppins:500&display=swap" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDM4R4ZQGmaCj3wA4R3ykoEr4EeQPHSvRc&libraries=places"></script>
+
+
+    <script src="~/js/googleMap.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+</head>
+
+<body>
+   
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="google map.jsp">Đặt xe máy</a>
+                @foreach (var kh in Model)
+                {
+                    @*<span id="PassengerName">@kh.Ten</span>*@
+                    <a class="navbar-brand" id="PassengerName">@kh.Ten</a>
+                    
+                        <img src="~/image/KhachHang/@kh.HinhAnh" alt="" width="50" height="50" id="PassengerImage" >
+                    
+                }
+                </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <!--
+                    <li><a href="./settings.html">Settigns</a></li>
+                    <li><a href="./logout.html">Logout</a></li>
+                    -->
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-4 location-form">
+                <form id="frmLocation" action="" role="form">
+                    <div class="panel-group" id="locationDetails" role="tablist" aria-multiselectable="true">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="locationDetailsHeading">
+                                <h4 class="panel-title">
+                                    <span class="glyphicon glyphicon-edit"></span>
+                                    <a role="button" data-toggle="collapse" data-parent="#locationDetails" href="#locationSection" aria-expanded="true" aria-controls="locationSection">
+                                        Thông tin vị trí
+                                    </a>
+                                    <div class="checkbox pull-right">
+                                        <label>
+                                            <input id="chkOptimizePath" type="checkbox" />
+                                            Tối ưu hóa chỉ dẫn
+                                        </label>
+                                    </div>
+                                </h4>
+                            </div>
+                            <div id="locationSection" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="locationDetailsHeading">
+                                <div class="panel-body">
+                                    <div id="locations"></div>
+
+                                    <div class="form-group">
+                                        <button id="btnAddLocation" type="button" class="col-xs-6 btn btn-success">
+                                            <span class="glyphicon glyphicon-plus-sign"></span> Thêm vị trí
+                                        </button>
+                                        <button id="btnClearDirections" type="button" class="col-xs-5 btn btn-danger">
+                                            <span class="glyphicon glyphicon-remove-sign"></span> Đặt lại
+                                        </button>
+                                        <button id="btnCalculateFare" type="button" class="col-xs-6 btn btn-primary">
+                                            <span class="glyphicon glyphicon-ok-sign"></span> Giá tiền
+                                        </button>
+                                        <button id="btnGetJson" type="button" class="col-xs-5 btn btn-primary">
+                                            <span class="glyphicon glyphicon-ok-sign"></span> Xem thông tin
+                                        </button>
+                                        <button id="btnBookings" type="button" class="col-xs-6 btn btn-success">
+                                            <span class="glyphicon glyphicon-plus-sign"></span> Đặt ngay
+                                        </button>
+                                        <button id="btnGetCurrentLocation" type="button" class="col-xs-5 btn btn-success">
+                                            <span class="glyphicon glyphicon-plus-sign"></span> Lấy vị trí hiện tại
+                                        </button>
+                                        <button id="btnBack" type="button" class="col-xs-5 btn btn-danger">
+                                            <span class="glyphicon glyphicon-remove-sign"></span> Quay lại
+                                        </button>
+                                        <button id="btnDirection" type="button" class="col-xs-6 btn btn-success">
+                                            <span class="glyphicon glyphicon-plus-sign"></span> Điều hướng
+                                        </button>
+                                        <div id="popup" class="popup" style="display:none;">
+                                            <div class="popup-content">
+                                                <div class="popup-header">
+                                                    <button id="btnExit" type="button" class="btn btn-danger">
+                                                        <span class="glyphicon glyphicon-remove-sign"></span> Exit
+                                                    </button>
+                                                </div>
+                                                <div class="popup-body">
+                                                    <div class="distance">
+                                                        <span class="glyphicon glyphicon-ok"></span>
+                                                        <label>Khoảng cách:</label>
+                                                        <span id="distanceLeft"></span>
+                                                    </div>
+                                                    <div class="speed">
+                                                        <span class="glyphicon glyphicon-ok"></span>
+                                                        <label>Tốc độ:</label>
+                                                        <span id="speed"></span>
+                                                    </div>
+                                                    <div class="time-left">
+                                                        <span class="glyphicon glyphicon-ok"></span>
+                                                        <label>Thời gian còn lại:</label>
+                                                        <span id="timeLeft"></span>
+                                                    </div>
+                                                    <div id="buttonContainer">
+                                                        <button id="stopButton">Stop</button>
+                                                        <button id="nextButton">Next</button>
+                                                        <button id="accelerateButton">Accelerate</button>
+                                                        <button id="decelerateButton">Decelerate</button>
+                                                        <button id="accidentButton">Accident and stop</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <label for="cash">
+                                            <span>Lựa chọn phương thức thanh toán</span>
+                                        </label>
+
+
+
+                                        <form>
+                                            <fieldset>
+                                                <label for="cash">
+                                                    <input type="radio" name="ThanhToan" value="Tiền mặt" onchange="displayRadioValue()" />
+                                                    <i class="fa fa-money" aria-hidden="true"></i>
+                                                    <span>Tiền mặt</span>
+                                                </label> <br />
+                                                <label for="card">
+                                                    <input type="radio" name="ThanhToan" value="Qua thẻ" onchange="displayRadioValue()" />
+                                                    <i class="fa fa-credit-card" aria-hidden="true"></i>
+                                                    <a href="/ThanhToan/ThanhToan"><button class="favorite styled" type="button">Qua thẻ</button></a>
+                                                </label> <br />
+                                            </fieldset>
+
+
+                                            <script>
+                                                function displayRadioValue() {
+                                                    var ele = document.getElementsByName('ThanhToan');
+
+                                                    for (i = 0; i < ele.length; i++) {
+                                                        if (ele[i].checked)
+                                                            document.getElementById("result").innerHTML = "" + ele[i].value;
+                                                    }
+                                                }
+                                            </script>
+                                            @*<script>
+                                                // Simulate movement along the route
+                                                //function simulateMovement() {
+                                                    var map = new google.maps.Map(document.getElementById('googleMap'));
+
+                                                    var directionsService = new google.maps.DirectionsService();
+                                                    var directionsRenderer = new google.maps.DirectionsRenderer({
+                                                        map: map,
+                                                    });
+
+                                                    var markerA = new google.maps.Marker({
+                                                        map: map,
+                                                        id: 'gmimap2', // Set the id attribute for markerA
+                                                        icon: {
+                                                            path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW, // Use the arrow symbol
+                                                            fillColor: '#00f',
+                                                            fillOpacity: 1,
+                                                            strokeColor: '#00f',
+                                                            strokeOpacity: 1,
+                                                            strokeWeight: 1,
+                                                            scale: 6,
+                                                        },
+                                                    });
+
+                                                    var markerB = new google.maps.Marker({
+                                                        map: map,
+                                                        id: 'gmimap3', // Set the id attribute for markerB
+                                                        icon: {
+                                                            path: google.maps.SymbolPath.CIRCLE,
+                                                            fillColor: '#f00',
+                                                            fillOpacity: 1,
+                                                            strokeColor: '#f00',
+                                                            strokeOpacity: 1,
+                                                            strokeWeight: 1,
+                                                            scale: 6,
+                                                        },
+                                                    });
+
+                                                    var infoWindow = new google.maps.InfoWindow();
+                                                    var pickupAddress = document.getElementById('txtLocation1').value;
+                                                    var dropoffAddress = document.getElementById('txtLocation2').value;
+
+                                                    var request = {
+                                                        origin: pickupAddress,
+                                                        destination: dropoffAddress,
+                                                        travelMode: google.maps.TravelMode.DRIVING,
+                                                    };
+
+                                                    directionsService.route(request, function (result, status) {
+                                                        if (status == google.maps.DirectionsStatus.OK) {
+                                                            directionsRenderer.setDirections(result);
+
+                                                            var leg = result.routes[0].legs[0];
+                                                            var distance = leg.distance.text;
+                                                            var duration = leg.duration.text;
+
+                                                            markerA.setPosition(leg.start_location);
+                                                            markerB.setPosition(leg.end_location);
+
+                                                            var bounds = new google.maps.LatLngBounds();
+                                                            bounds.extend(markerA.getPosition());
+                                                            bounds.extend(markerB.getPosition());
+                                                            map.fitBounds(bounds);
+
+                                                            // Set maximum zoom level to ensure marker A is visible
+                                                            var maxZoomLevel = 18; // Adjust the maximum zoom level as needed
+                                                            if (map.getZoom() > maxZoomLevel) {
+                                                                map.setZoom(maxZoomLevel);
+                                                            }
+
+                                                            google.maps.event.addListener(markerA, 'click', function () {
+                                                                infoWindow.setContent('Start Location');
+                                                                infoWindow.open(map, markerA);
+                                                            });
+
+                                                            google.maps.event.addListener(markerB, 'click', function () {
+                                                                infoWindow.setContent('End Location');
+                                                                infoWindow.open(map, markerB);
+                                                            });
+
+                                                            document.getElementById('distance').textContent = distance;
+                                                            document.getElementById('duration').textContent = duration;
+
+                                                            // Show the popup
+                                                            var popup = document.getElementById('popup');
+                                                            popup.style.display = 'block';
+
+                                                            // Calculate and display remaining distance
+                                                            var distanceLeft = document.getElementById('distanceLeft');
+                                                            distanceLeft.textContent = distance;
+
+                                                            // Calculate and display remaining time
+                                                            var timeLeft = document.getElementById('timeLeft');
+                                                            timeLeft.textContent = duration;
+
+                                                            // Calculate and display speed
+                                                            var speed = document.getElementById('speed');
+                                                            var distanceValue = parseFloat(distance.replace(',', ''));
+                                                            var durationValue = parseFloat(duration.split(' ')[0]);
+                                                            var speedValue = distanceValue / durationValue;
+                                                            speed.textContent = speedValue.toFixed(2) + ' km/h';
+
+                                                            // Start counting down
+                                                            var startTime = new Date().getTime();
+                                                            var durationInMillis = durationValue * 60 * 1000; // Convert duration to milliseconds
+
+                                                            var countdown = setInterval(function () {
+                                                                var currentTime = new Date().getTime();
+                                                                var elapsedTime = currentTime - startTime;
+                                                                var remainingTime = durationInMillis - elapsedTime;
+
+                                                                if (remainingTime <= 0) {
+                                                                    clearInterval(countdown);
+                                                                    popup.style.display = 'none';
+                                                                } else {
+                                                                    // Calculate and display remaining time
+                                                                    var hours = Math.floor(remainingTime / (1000 * 60 * 60));
+                                                                    var minutes = Math.floor((remainingTime % (1000 * 60 * 60)) / (1000 * 60));
+                                                                    var seconds = Math.floor((remainingTime % (1000 * 60)) / 1000);
+
+                                                                    var timeLeftText =
+                                                                        (hours < 10 ? '0' + hours : hours) +
+                                                                        ':' +
+                                                                        (minutes < 10 ? '0' + minutes : minutes) +
+                                                                        ':' +
+                                                                        (seconds < 10 ? '0' + seconds : seconds);
+                                                                    timeLeft.textContent = timeLeftText;
+
+                                                                    // Calculate and display remaining distance
+                                                                    var remainingDistance = (remainingTime / durationInMillis) * distanceValue;
+                                                                    distanceLeft.textContent = remainingDistance.toFixed(2) + ' km';
+
+                                                                    // Calculate and display speed
+                                                                    var currentSpeed = remainingDistance / (remainingTime / (50 * 26 * 6));
+                                                                    speed.textContent = currentSpeed.toFixed(2) + ' km/h';
+
+                                                                    // Get the heading (direction) from the first step of the route
+                                                                    var heading = result.routes[0].legs[0].steps[0].heading;
+                                                                    map.setHeading(heading);
+                                                                }
+                                                            }, 1000);
+                                                        } else {
+                                                            console.error('Directions request failed: ' + status);
+                                                        }
+                                                    });
+                                                }
+
+                                                // Get a reference to the "Simulate movement" button
+                                                var simulateButton = document.getElementById('btnDirection');
+
+                                                // Attach an event listener to the button to trigger the simulation
+                                                simulateButton.addEventListener('click', function () {
+                                                    simulateMovement();
+                                                });
+
+                                                // Hide the popup when clicking the exit button
+                                                var btnExit = document.getElementById('btnExit');
+                                                btnExit.addEventListener('click', function () {
+                                                    var popup = document.getElementById('popup');
+                                                    var countdown = document.getElementById('countdown');
+                                                    popup.style.display = 'none';
+                                                    clearInterval(countdown);
+                                                    simulateButton.removeEventListener('click', simulateMovement);
+                                                });
+                                            </script>*@
+
+
+                                        </form>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel-group fare-details-group" id="fareDetails" role="tablist" aria-multiselectable="true">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab" id="fareDetailsHeading">
+                                <h4 class="panel-title">
+                                    <span class="glyphicon glyphicon-th-list"></span>
+                                    <a role="button" data-toggle="collapse" data-parent="#fareDetails" href="#fareBreakDown" aria-expanded="true" aria-controls="fareBreakDown">
+                                        Giá: <strong><span id="fare"></span></strong>
+                                    </a>
+                                </h4>
+                            </div>
+                            <div id="fareBreakDown" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="fareDetailsHeading">
+                                <div class="panel-body">
+                                    <table class="table" id="DatXe">
+                                        <tr>
+                                            <td>
+                                                <span class="glyphicon glyphicon-ok"></span>
+                                                <label>Số điện thoại:</label>
+                                            </td>
+                                            <td>
+                                                <span id="phone-number">@Session["SoDienThoai"].ToString()</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <span class="glyphicon glyphicon-ok"></span>
+                                                <label>Khoảng cách:</label>
+                                            </td>
+                                            <td>
+                                                <span id="distance"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <span class="glyphicon glyphicon-ok"></span>
+                                                <label>Thời gian:</label>
+                                            </td>
+                                            <td>
+                                                <span id="duration"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <span class="glyphicon glyphicon-ok"></span>
+                                                <label>Giá khởi đầu:</label>
+                                            </td>
+                                            <td>
+                                                <span id="startingPrice"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <span class="glyphicon glyphicon-ok"></span>
+                                                <label>Giá chuyến đi:</label>
+                                            </td>
+                                            <td>
+                                                <span id="travelPrice"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <span class="glyphicon glyphicon-ok"></span>
+                                                <label>Tổng cộng:</label>
+                                            </td>
+                                            <td>
+                                                <strong><span id="totalFare"></span></strong>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <span class="glyphicon glyphicon-ok"></span>
+                                                <label>Loại xe:</label>
+                                            </td>
+                                            <td>
+                                                <strong><span id="type"></span></strong>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <span class="glyphicon glyphicon-ok"></span>
+                                                <label>Hình thức thanh toán:</label>
+                                            </td>
+                                            <td>
+                                                <strong><span id="result"></span></strong>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <span class="glyphicon glyphicon-ok"></span>
+                                                <label>Ngày giờ đặt</label>
+                                            </td>
+                                            <td>
+                                                <strong><span id="dated"></span></strong>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <script>
+                    $(document).ready(function () {
+                        var today = new Date();
+                        var dateTime = today.toISOString().slice(0, 16);
+                        $('#dated').text(dateTime);
+
+                    });
+                </script>
+                <script>
+                    $(function () {
+                        var bookingHub = $.connection.bookingHub;
+
+                        // start the connection
+                        $.connection.hub.start().done(function () {
+                            console.log('SignalR connection started.');
+
+                            // send data through the connection
+                            $("#btnBookings").click(function (e) {
+                                var distance = $("#distance").text();
+                                var duration = $("#duration").text();
+                                var totalFare = $("#totalFare").text();
+                                var location1 = $("#txtLocation1").val();
+                                var location2 = $("#txtLocation2").val();
+                                var type = $("#type").text();
+                                var phone = $("#phone-number").text();
+                                var payment = $("#result").text();
+                                var DateTime = $("#dated").text();
+                                var PassengerImage = $("#PassengerImage").attr("src");
+                                var PassengerName = $("#PassengerName").text();
+
+                                // Show the Swal alert to confirm the booking
+                                swal({
+                                    title: "Confirm booking",
+                                    text: "Are you sure you want to book this ride?",
+                                    icon: "info",
+                                    buttons: true,
+                                    dangerMode: false,
+                                })
+                                    .then((willBook) => {
+                                        if (willBook) {
+                                            bookingHub.server.sendBookingData(distance, duration, totalFare, location1, location2, type, phone, payment, DateTime, PassengerImage, PassengerName);
+                                            // Show the Swal alert that the booking is finding a driver
+                                            swal({
+                                                title: "Finding a driver",
+                                                text: "Your booking is being processed and a driver will be assigned shortly.",
+                                                icon: "info",
+                                                buttons: false,
+                                                closeOnClickOutside: false,
+                                                closeOnEsc: false,
+                                            });
+                                        } else {
+                                            swal("Booking cancelled!", "", "warning");
+                                        }
+                                    });
+                            });
+
+                        });
+                        bookingHub.client.updateBookingStatus = function (status, driverLocation) {
+                            if (status === "accepted") {
+                                swal({
+                                    title: "Ride accepted",
+                                    text: "A driver has accepted your ride! Driver location: " + "\n" +driverLocation,
+                                    icon: "success",
+                                    buttons: false,
+                                    timer: 2000
+                                });
+                                // Redirect to the new page
+                                window.location.href = "@Url.Action("NhanChuyenXe", "DatXe")";
+                            } else if (status === "cancelled") {
+                                swal({
+                                    title: "Ride cancelled",
+                                    text: "The ride has been cancelled by the driver.",
+                                    icon: "error",
+                                    buttons: false,
+                                    timer: 2000
+                                });
+                            }
+                        };
+
+                    });
+
+
+
+                </script>
+                @*<script>
+                        $(document).ready(function () {
+                            // Initialize the Google Map
+                            initMap();
+
+                            // Add an event listener to the "btnGetCurrentLocation" button
+                            //$("#btnGetCurrentLocation").click(function () {
+                                if (navigator.geolocation) {
+                                    navigator.geolocation.getCurrentPosition(function (position) {
+                                        // Create a new LatLng object using the user's current location
+                                        var latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+
+                                        // Create a new Marker object at the user's current location
+                                        var marker = new google.maps.Marker({
+                                            position: latLng,
+                                            map: googleMap
+                                        });
+
+                                        // Center the map at the user's current location
+                                        googleMap.setCenter(latLng);
+
+                                        // Add the user's current location to the "locations" div
+                                        var divLocations = document.getElementById("locations");
+                                        divLocations.innerHTML = "Vị trí hiện tại: " + position.coords.latitude + ", " + position.coords.longitude;
+                                    });
+                                } else {
+                                    alert("Geolocation is not supported by this browser.");
+                                }
+                            });
+                        });
+                    </script>*@
+                @*<script>
+                        //$(document).ready(function () {
+                            $("#btnGetCurrentLocation").click(function () {
+                                getCurrentLocation();
+                            });
+                        });
+
+                        function getCurrentLocation() {
+                            if (navigator.geolocation) {
+                                navigator.geolocation.getCurrentPosition(function (position) {
+                                    var latitude = position.coords.latitude;
+                                    var longitude = position.coords.longitude;
+                                    //var locationTextBoxId = "txtLocation" + (locationCounter + 1);
+                                    //addLocationBox(locationTextBoxId, latitude, longitude);
+                                    //addAutoComplete(locationTextBoxId);
+                                });
+                            } else {
+                                alert("Trình duyệt không hỗ trợ lấy vị trí hiện tại.");
+                            }
+                        }
+                    </script>*@
+            </div>
+            <div class="col-md-8 google-map-wrap">
+                <div id="googleMap" class="map"></div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
+
+
+
